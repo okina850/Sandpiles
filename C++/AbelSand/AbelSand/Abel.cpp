@@ -115,7 +115,7 @@ double abel::MoveStandard(unsigned int n)
 		return ((float)(t2)-float(t1)) * 0.001;	
 }
 
-double abel::MoveStandard_1Step(unsigned int n)
+double abel::MoveStandard_1Step(unsigned int n,unsigned int ih)
 {
 	unsigned int** z_lat = new unsigned int*[kLatticeSize];
 	bool** v_sites = new bool*[kLatticeSize];
@@ -130,7 +130,7 @@ double abel::MoveStandard_1Step(unsigned int n)
 		to_be_moved[k] = new bool[kLatticeSize];
 
 		for (int i = 0; i < kLatticeSize; ++i){
-		    z_lat[k][i] = 0;  
+		    z_lat[k][i] = ih;  
 			v_sites[k][i] = false; 
 			odometer[k][i] = 0; 
 			to_be_moved[k][i] = false;
@@ -202,8 +202,9 @@ double abel::MoveStandard_1Step(unsigned int n)
 
 	
 	BoxCoord b = TrimmedArray(v_sites, kLatticeSize, kLatticeSize);
-	ArrayToCSV(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + ".csv").c_str());
-	ArrayToPPM(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + ".ppm").c_str());
+	//ArrayToJSON(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".json").c_str());
+	ArrayToCSV(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel"  + std::to_string(n) + "ih=" + std::to_string(ih) + ".csv").c_str());
+	ArrayToPPM(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel"  + std::to_string(n) + "ih=" + std::to_string(ih) + ".ppm").c_str());
 
 	// clean-ups
 	for (int k = 0; k<kLatticeSize; ++k){

@@ -105,6 +105,10 @@ void output_functions::ArrayToCSV(unsigned int ** z_lat, bool ** visited, int i1
 	csv_file.close();
 }
 
+void output_functions::ArrayToJSON(unsigned int** z_lat, bool** visited, int i1, int i2, int j1, int j2, const char* filename) {
+
+}
+
 template<typename T_array>
 void output_functions::ArrayToCSV(T_array ** a, int sz1, int sz2, const char* filename)
 {
@@ -155,3 +159,4 @@ void output_functions::ArrayToPPM(unsigned int ** z_lat, bool ** visited, int i1
 	}
 	ppm_file.close();
 }
+
