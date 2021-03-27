@@ -10,7 +10,7 @@ using namespace std;
 using namespace abel;
 using namespace output_functions;
 
-double abel::MoveStandard(unsigned int n)
+double abel::MoveStandard(unsigned int n, unsigned int ih)
 {
 		// sandpile stabilization with n particles at the origin in a standard way, 
 	    // with preallocated stack of moving vertices
@@ -28,7 +28,7 @@ double abel::MoveStandard(unsigned int n)
 			to_be_moved[k] = new bool[kLatticeSize];
 
 			for (int i = 0; i < kLatticeSize; ++i){
-				z_lat[k][i] = 0;  
+				z_lat[k][i] = ih;  
 				to_be_moved[k][i] = false; 
 				v_sites[k][i] = false;
 			}
@@ -93,7 +93,8 @@ double abel::MoveStandard(unsigned int n)
 
 		output_functions::BoxCoord b;
 		b = TrimmedArray(v_sites, kLatticeSize, kLatticeSize);
-		ArrayToCSV(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + ".csv").c_str());
+		ArrayToCSV(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".csv").c_str());
+		ArrayToPPM(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".ppm").c_str());
 
 		// clean-ups
 		for (int k = 0; k<kLatticeSize; ++k){
@@ -112,7 +113,7 @@ double abel::MoveStandard(unsigned int n)
 		std::cout<<"Maximal number in the stack was "<<max_of_top<<endl;
 		std::cout<<"Number of moves in the main loop was "<<n_of_moves<<endl;
 
-		return ((float)(t2)-float(t1)) * 0.001;	
+		return ((float)(t2)-(float)(t1)) * 0.001;
 }
 
 double abel::MoveStandard_1Step(unsigned int n,unsigned int ih)
@@ -177,6 +178,13 @@ double abel::MoveStandard_1Step(unsigned int n,unsigned int ih)
 			for (int k = 0; k < 4; ++k){
 				lx = x + kDx[k];
 				ly = y + kDy[k];
+
+				
+				if (lx >= kLatticeSize || lx < 0 || ly >= kLatticeSize || ly < 0) {
+					cout << lx << "," << ly <<endl;
+					
+					continue; 
+				}
 				
 				v_sites[lx][ly] = true;
 				z_lat[lx][ly] ++;
@@ -202,7 +210,7 @@ double abel::MoveStandard_1Step(unsigned int n,unsigned int ih)
 
 	
 	BoxCoord b = TrimmedArray(v_sites, kLatticeSize, kLatticeSize);
-	//ArrayToJSON(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".json").c_str());
+	//ArrayToJSON(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".json"));
 	ArrayToCSV(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel"  + std::to_string(n) + "ih=" + std::to_string(ih) + ".csv").c_str());
 	ArrayToPPM(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel"  + std::to_string(n) + "ih=" + std::to_string(ih) + ".ppm").c_str());
 
@@ -221,5 +229,5 @@ double abel::MoveStandard_1Step(unsigned int n,unsigned int ih)
 	delete[] walking;
 	
 
-	return ((double)(t2)-double(t1))*0.001;
+	return ((double)(t2)-(double)(t1))*0.001;
 }

@@ -1,5 +1,5 @@
 //using namespace std;
-
+#include <string>
 namespace output_functions
 {
 	struct BoxCoord

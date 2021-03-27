@@ -12,7 +12,7 @@ namespace abel
 		unsigned int y;
 	};
 
-	double MoveStandard(unsigned int n);        // performs Abelian sandpile toppling 1 by 1 
+	double MoveStandard(unsigned int n, unsigned int ih);        // performs Abelian sandpile toppling 1 by 1 
 	double MoveStandard_1Step(unsigned int n,unsigned int ih);  // performs toppling of Abelian sandpile by larger mass
 
 }

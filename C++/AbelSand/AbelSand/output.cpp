@@ -7,6 +7,19 @@
 using namespace output_functions;
 using namespace std;
 
+std::string rtrim(std::string src,string wantToTrim)
+{
+	// trimするとき削除する文字
+	std::string trimCharacters = wantToTrim;
+
+	// trimするとき削除する文字以外の最末尾の文字の位置を取得します。
+	size_t pos = src.find_last_not_of(trimCharacters);
+
+	// trimするとき削除する文字以外の文字列を切り出します。
+	std::string dst = src.substr(0, pos + 1);
+	return dst;
+}
+
 //template<typename T_array>
 BoxCoord output_functions::TrimmedArray(bool ** a, int sz1, int sz2)
 {
@@ -79,12 +92,28 @@ BoxCoord output_functions::TrimmedArray(bool ** a, int sz1, int sz2)
 //template<typename T_array>
 void output_functions::ArrayToCSV(unsigned int ** z_lat, bool ** visited, int i1, int i2, int j1, int j2, const char* filename)
 {
+	string file = string(filename);
+
+	// check if the file exists
+	ifstream fcheck;
+	while (true) {
+		fcheck.open(file);
+		if (!fcheck.fail()) {//already exists
+			fcheck.close();
+			file = rtrim(file,".csv") + "(" + "another" + ")" + ".csv";
+		}
+		else {//not exists
+			fcheck.close();
+			break;
+		}
+	}
+	
 	// given the box [i1, i2]x[j1,j2] in the array T_array, saves the box into a csv file
 
 	ofstream csv_file;
 	string row_data = "";
 
-	csv_file.open(filename);
+	csv_file.open(file);
 	
 	for (int i = i1; i <= i2; ++i){
 		row_data = "";
@@ -112,12 +141,27 @@ void output_functions::ArrayToJSON(unsigned int** z_lat, bool** visited, int i1,
 template<typename T_array>
 void output_functions::ArrayToCSV(T_array ** a, int sz1, int sz2, const char* filename)
 {
+	string file = string(filename);
+
+	// check if the file exists
+	ifstream fcheck;
+	while (true) {
+		fcheck.open(file);
+		if (!fcheck.fail()) {//already exists
+			fcheck.close();
+			file = rtrim(file, ".csv") + "(" + "another" + ")" + ".csv";
+		}
+		else {//not exists
+			fcheck.close();
+			break;
+		}
+	}
 	// outputs the array a into csv file with the given filename
 
 	ofstream csv_file;
 	string row_data = "";
 
-	csv_file.open(filename);
+	csv_file.open(file);
 
 	for (int i = 0; i < sz1; ++i){
 		row_data = "";
@@ -132,14 +176,29 @@ void output_functions::ArrayToCSV(T_array ** a, int sz1, int sz2, const char* fi
 	csv_file.close();
 }
 
-void output_functions::ArrayToPPM(unsigned int ** z_lat, bool ** visited, int i1, int i2, int j1, int j2, const char * filename)
+void output_functions::ArrayToPPM(unsigned int ** z_lat, bool ** visited, int i1, int i2, int j1, int j2, const char* filename)
 {
+	string file = string(filename);
+
+	// check if the file exists
+	ifstream fcheck;
+	while (true) {
+		fcheck.open(file);
+		if (!fcheck.fail()) {//already exists
+			fcheck.close();
+			file = rtrim(file, ".ppm") + "(" + "another" + ")" + ".ppm";
+		}
+		else {//not exists
+			fcheck.close();
+			break;
+		}
+	}
 	// output the subarray [i1, i2]x[j1,j2] into a ppm (raw image) file 
 
 	ofstream ppm_file;
 	string row_data = "";
 
-	ppm_file.open(filename);
+	ppm_file.open(file);
 
 	ppm_file << (string("P3\n") + std::to_string(i2 - i1 + 1) + " " + std::to_string(j2 - j1 + 1) + "\n255\n" );
 
