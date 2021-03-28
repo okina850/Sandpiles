@@ -179,7 +179,7 @@ void output_functions::ArrayToCSV(T_array ** a, int sz1, int sz2, const char* fi
 void output_functions::NonTrimmmingArrayToCSV(unsigned int** z_lat, int sz1, int sz2, const char* filename)
 {
 	string file = string(filename);
-
+	
 	// check if the file exists
 	ifstream fcheck;
 	while (true) {
@@ -197,7 +197,7 @@ void output_functions::NonTrimmmingArrayToCSV(unsigned int** z_lat, int sz1, int
 
 	ofstream csv_file;
 	string row_data = "";
-
+	
 	csv_file.open(file);
 
 	for (int i = 0; i < sz1; ++i) {
