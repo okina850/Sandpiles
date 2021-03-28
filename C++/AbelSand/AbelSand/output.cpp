@@ -176,6 +176,87 @@ void output_functions::ArrayToCSV(T_array ** a, int sz1, int sz2, const char* fi
 	csv_file.close();
 }
 
+void output_functions::NonTrimmmingArrayToCSV(unsigned int** z_lat, int sz1, int sz2, const char* filename)
+{
+	string file = string(filename);
+
+	// check if the file exists
+	ifstream fcheck;
+	while (true) {
+		fcheck.open(file);
+		if (!fcheck.fail()) {//already exists
+			fcheck.close();
+			file = rtrim(file, ".csv") + "(" + "another" + ")" + ".csv";
+		}
+		else {//not exists
+			fcheck.close();
+			break;
+		}
+	}
+	// outputs the array a into csv file with the given filename
+
+	ofstream csv_file;
+	string row_data = "";
+
+	csv_file.open(file);
+
+	for (int i = 0; i < sz1; ++i) {
+		row_data = "";
+		for (int j = 0; j < sz2 - 1; ++j) {
+			row_data = row_data + std::to_string(static_cast <unsigned long long>(z_lat[i][j])) + ",";
+		}
+		row_data = row_data + std::to_string(static_cast <unsigned long long>(z_lat[i][sz2 - 1])) + "\n";
+
+		csv_file << row_data;
+	}
+
+	csv_file.close();
+}
+
+void output_functions::NonTrimmmingArrayToPPM(unsigned int** z_lat, int sz1, int sz2, const char* filename) {
+
+	string file = string(filename);
+
+	// check if the file exists
+	ifstream fcheck;
+	while (true) {
+		fcheck.open(file);
+		if (!fcheck.fail()) {//already exists
+			fcheck.close();
+			file = rtrim(file, ".ppm") + "(" + "another" + ")" + ".ppm";
+		}
+		else {//not exists
+			fcheck.close();
+			break;
+		}
+	}
+	// output the array sz1 x sz2 into a ppm (raw image) file 
+
+	ofstream ppm_file;
+	string row_data = "";
+
+	ppm_file.open(file);
+
+	ppm_file << (string("P3\n") + std::to_string(sz1) + " " + std::to_string(sz2) + "\n255\n");
+
+	for (int i = 0; i < sz1; ++i) {
+		row_data = "";
+		for (int j = 0; j < sz2; ++j) {
+			if (z_lat[i][j] == 1)
+				row_data += "255 128 255 ";
+			else if (z_lat[i][j] == 2)
+				row_data += "255 0 0 ";
+			else if (z_lat[i][j] == 3)
+				row_data += "0 128 255 ";
+			else
+				row_data += "0 0 0 ";
+		}
+		ppm_file << (row_data + "\n");
+	}
+	ppm_file.close();
+}
+
+
 void output_functions::ArrayToPPM(unsigned int ** z_lat, bool ** visited, int i1, int i2, int j1, int j2, const char* filename)
 {
 	string file = string(filename);

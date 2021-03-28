@@ -14,6 +14,10 @@ namespace output_functions
 	
 	template <typename T_array>
 	void ArrayToCSV(T_array** a, int sz1, int sz2, const char* filename);
+
+	void NonTrimmmingArrayToCSV(unsigned int** z_lat, int sz1, int sz2, const char* filename);
+	void NonTrimmmingArrayToPPM(unsigned int** z_lat, int sz1, int sz2, const char* filename);
+
 	
 	void ArrayToPPM(unsigned int ** z_lat, bool ** visited, int i1, int i2, int j1, int j2, const char* filename);
 }

@@ -16,7 +16,7 @@ double abel::MoveStandard(unsigned int n, unsigned int ih)
 	    // with preallocated stack of moving vertices
 
 		unsigned int** z_lat = new unsigned int*[kLatticeSize];      // models the standard lattice Z^2
-		bool** v_sites = new bool*[kLatticeSize];                    // vertices of Z^2 which were visited during the process
+		bool** v_sites = new bool*[kLatticeSize];                    // vertices of Z^2 which were visited during the process//for trimming non-visited area
 		bool** to_be_moved = new bool*[kLatticeSize];                // vertices of Z^2 which are already in the walking stack
 		unsigned int** odometer = new unsigned int*[kLatticeSize];   // total number of topplings of a given vertex of Z^2
 
@@ -64,7 +64,8 @@ double abel::MoveStandard(unsigned int n, unsigned int ih)
 			if (max_of_top < top){
 				max_of_top = top; 
 			}
-
+			//cout << "x:" << x << "," << "lx:" << lx << endl;
+			//cout << "y:" << y << "," << "ly:" << ly << endl;
 			x = walking_sites[top].x;
 			y = walking_sites[top].y;
 			
@@ -77,6 +78,10 @@ double abel::MoveStandard(unsigned int n, unsigned int ih)
 			for (int k = 0; k < 4; ++k){
 				lx = x + kDx[k];
 				ly = y + kDy[k];
+
+				if (!(0 <= lx && lx < kLatticeSize && 0 <= ly && ly < kLatticeSize)) {
+					continue;
+				}
 
 				v_sites[lx][ly] = true;
 				z_lat[lx][ly] += d;
@@ -91,10 +96,18 @@ double abel::MoveStandard(unsigned int n, unsigned int ih)
 
 		t2 = clock();
 
+		cout << "Now saving..." << endl;
+
 		output_functions::BoxCoord b;
 		b = TrimmedArray(v_sites, kLatticeSize, kLatticeSize);
-		ArrayToCSV(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".csv").c_str());
-		ArrayToPPM(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".ppm").c_str());
+
+		NonTrimmmingArrayToCSV(z_lat, kLatticeSize, kLatticeSize, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + "(noTrim)" + ".csv").c_str());
+		//ArrayToCSV(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".csv").c_str());
+		NonTrimmmingArrayToPPM(z_lat, kLatticeSize, kLatticeSize, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + "(noTrim)" + ".ppm").c_str());
+
+		//ArrayToPPM(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".ppm").c_str());
+
+		
 
 		// clean-ups
 		for (int k = 0; k<kLatticeSize; ++k){
@@ -181,7 +194,7 @@ double abel::MoveStandard_1Step(unsigned int n,unsigned int ih)
 
 				
 				if (lx >= kLatticeSize || lx < 0 || ly >= kLatticeSize || ly < 0) {
-					cout << lx << "," << ly <<endl;
+					//cout << lx << "," << ly <<endl;
 					
 					continue; 
 				}
@@ -208,11 +221,15 @@ double abel::MoveStandard_1Step(unsigned int n,unsigned int ih)
 	std::cout<<"Maximal number in the stack was "<<max_of_top<<endl;
 	std::cout<<"Number of moves in the main loop was "<<n_of_moves<<endl;
 
+	cout << "Now saving..." << endl;
+
 	
 	BoxCoord b = TrimmedArray(v_sites, kLatticeSize, kLatticeSize);
 	//ArrayToJSON(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + ".json"));
-	ArrayToCSV(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel"  + std::to_string(n) + "ih=" + std::to_string(ih) + ".csv").c_str());
-	ArrayToPPM(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel"  + std::to_string(n) + "ih=" + std::to_string(ih) + ".ppm").c_str());
+	NonTrimmmingArrayToCSV(z_lat, kLatticeSize, kLatticeSize, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + "(noTrim)" + ".csv").c_str());
+	//ArrayToCSV(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel"  + std::to_string(n) + "ih=" + std::to_string(ih) + ".csv").c_str());
+	//ArrayToPPM(z_lat, v_sites, b.i1, b.i2, b.j1, b.j2, ("Abel"  + std::to_string(n) + "ih=" + std::to_string(ih) + ".ppm").c_str());
+	NonTrimmmingArrayToPPM(z_lat, kLatticeSize, kLatticeSize, ("Abel" + std::to_string(n) + "ih=" + std::to_string(ih) + "(noTrim)" + ".ppm").c_str());
 
 	// clean-ups
 	for (int k = 0; k<kLatticeSize; ++k){
